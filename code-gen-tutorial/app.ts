@@ -8,6 +8,7 @@ import { DB } from "./config/database";
 
 const { JWT_SECRET } = process.env
 const getUser = (token:any) => {
+  let yp = ''
   try {
     if (token) {
       return jwt.verify(token, JWT_SECRET as string)
