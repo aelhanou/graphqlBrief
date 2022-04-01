@@ -1,9 +1,10 @@
-import { GraphQLResolveInfo } from 'graphql';
+import { GraphQLResolveInfo, GraphQLScalarType, GraphQLScalarTypeConfig } from 'graphql';
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
 export type MakeOptional<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]?: Maybe<T[SubKey]> };
 export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]: Maybe<T[SubKey]> };
+export type RequireFields<T, K extends keyof T> = Omit<T, K> & { [P in K]-?: NonNullable<T[P]> };
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
   ID: string;
@@ -11,6 +12,8 @@ export type Scalars = {
   Boolean: boolean;
   Int: number;
   Float: number;
+  /** The `Upload` scalar type represents a file upload. */
+  Upload: any;
 };
 
 export type AuthPayload = {
@@ -19,10 +22,18 @@ export type AuthPayload = {
   user: User;
 };
 
+export type File = {
+  __typename?: 'File';
+  encoding: Scalars['String'];
+  filename: Scalars['String'];
+  mimetype: Scalars['String'];
+};
+
 export type Mutation = {
   __typename?: 'Mutation';
   login?: Maybe<AuthPayload>;
   register?: Maybe<Scalars['Boolean']>;
+  singleUpload: File;
 };
 
 
@@ -33,6 +44,11 @@ export type MutationLoginArgs = {
 
 export type MutationRegisterArgs = {
   input?: InputMaybe<RegisterInput>;
+};
+
+
+export type MutationSingleUploadArgs = {
+  file: Scalars['Upload'];
 };
 
 export type Product = {
@@ -139,11 +155,13 @@ export type DirectiveResolverFn<TResult = {}, TParent = {}, TContext = {}, TArgs
 export type ResolversTypes = ResolversObject<{
   AuthPayload: ResolverTypeWrapper<AuthPayload>;
   Boolean: ResolverTypeWrapper<Scalars['Boolean']>;
+  File: ResolverTypeWrapper<File>;
   ID: ResolverTypeWrapper<Scalars['ID']>;
   Mutation: ResolverTypeWrapper<{}>;
   Product: ResolverTypeWrapper<Product>;
   Query: ResolverTypeWrapper<{}>;
   String: ResolverTypeWrapper<Scalars['String']>;
+  Upload: ResolverTypeWrapper<Scalars['Upload']>;
   User: ResolverTypeWrapper<User>;
   loginInput: LoginInput;
   registerInput: RegisterInput;
@@ -153,11 +171,13 @@ export type ResolversTypes = ResolversObject<{
 export type ResolversParentTypes = ResolversObject<{
   AuthPayload: AuthPayload;
   Boolean: Scalars['Boolean'];
+  File: File;
   ID: Scalars['ID'];
   Mutation: {};
   Product: Product;
   Query: {};
   String: Scalars['String'];
+  Upload: Scalars['Upload'];
   User: User;
   loginInput: LoginInput;
   registerInput: RegisterInput;
@@ -169,9 +189,17 @@ export type AuthPayloadResolvers<ContextType = any, ParentType extends Resolvers
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
+export type FileResolvers<ContextType = any, ParentType extends ResolversParentTypes['File'] = ResolversParentTypes['File']> = ResolversObject<{
+  encoding?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  filename?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  mimetype?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+}>;
+
 export type MutationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = ResolversObject<{
   login?: Resolver<Maybe<ResolversTypes['AuthPayload']>, ParentType, ContextType, Partial<MutationLoginArgs>>;
   register?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType, Partial<MutationRegisterArgs>>;
+  singleUpload?: Resolver<ResolversTypes['File'], ParentType, ContextType, RequireFields<MutationSingleUploadArgs, 'file'>>;
 }>;
 
 export type ProductResolvers<ContextType = any, ParentType extends ResolversParentTypes['Product'] = ResolversParentTypes['Product']> = ResolversObject<{
@@ -186,6 +214,10 @@ export type QueryResolvers<ContextType = any, ParentType extends ResolversParent
   users?: Resolver<Array<Maybe<ResolversTypes['User']>>, ParentType, ContextType>;
 }>;
 
+export interface UploadScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes['Upload'], any> {
+  name: 'Upload';
+}
+
 export type UserResolvers<ContextType = any, ParentType extends ResolversParentTypes['User'] = ResolversParentTypes['User']> = ResolversObject<{
   email?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   fullName?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
@@ -196,9 +228,11 @@ export type UserResolvers<ContextType = any, ParentType extends ResolversParentT
 
 export type Resolvers<ContextType = any> = ResolversObject<{
   AuthPayload?: AuthPayloadResolvers<ContextType>;
+  File?: FileResolvers<ContextType>;
   Mutation?: MutationResolvers<ContextType>;
   Product?: ProductResolvers<ContextType>;
   Query?: QueryResolvers<ContextType>;
+  Upload?: GraphQLScalarType;
   User?: UserResolvers<ContextType>;
 }>;
 
