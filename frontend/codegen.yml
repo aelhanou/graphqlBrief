@@ -1,0 +1,13 @@
+overwrite: true
+schema: "http://localhost:4000"
+documents: "src/**/*.gql"
+generates:
+  src/generated/index.tsx:
+    plugins:
+      - "typescript"
+      - "typescript-operations"
+      # - "typescript-react-apollo"
+      - "typescript-react-query"
+  ./graphql.schema.json:
+    plugins:
+      - "introspection"
