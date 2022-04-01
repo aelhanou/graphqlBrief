@@ -1,0 +1,9 @@
+overwrite: true
+schema: "./typeDefs"
+generates:
+  ./typesGenerated/graphql.ts:
+    config:
+      useIndexSignature: true
+    plugins:
+      - "typescript"
+      - "typescript-resolvers"
