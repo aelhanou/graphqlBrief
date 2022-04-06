@@ -1,3 +1,4 @@
+import { endpointUrl, fetchParams } from './fetcher';
 import { useQuery, UseQueryOptions } from 'react-query';
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
@@ -5,11 +6,11 @@ export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K]
 export type MakeOptional<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]?: Maybe<T[SubKey]> };
 export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]: Maybe<T[SubKey]> };
 
-function fetcher<TData, TVariables>(endpoint: string, requestInit: RequestInit, query: string, variables?: TVariables) {
+function fetcher<TData, TVariables>(query: string, variables?: TVariables) {
   return async (): Promise<TData> => {
-    const res = await fetch(endpoint, {
-      method: 'POST',
-      ...requestInit,
+    const res = await fetch(endpointUrl as string, {
+    method: "POST",
+    ...(fetchParams),
       body: JSON.stringify({ query, variables }),
     });
 
@@ -31,12 +32,28 @@ export type Scalars = {
   Boolean: boolean;
   Int: number;
   Float: number;
+  /** The `Upload` scalar type represents a file upload. */
+  Upload: any;
+};
+
+export type AuthPayload = {
+  __typename?: 'AuthPayload';
+  token: Scalars['String'];
+  user: User;
+};
+
+export type File = {
+  __typename?: 'File';
+  encoding: Scalars['String'];
+  filename: Scalars['String'];
+  mimetype: Scalars['String'];
 };
 
 export type Mutation = {
   __typename?: 'Mutation';
-  login?: Maybe<User>;
+  login?: Maybe<AuthPayload>;
   register?: Maybe<Scalars['Boolean']>;
+  singleUpload: File;
 };
 
 
@@ -47,6 +64,11 @@ export type MutationLoginArgs = {
 
 export type MutationRegisterArgs = {
   input?: InputMaybe<RegisterInput>;
+};
+
+
+export type MutationSingleUploadArgs = {
+  file: Scalars['Upload'];
 };
 
 export type Product = {
@@ -100,12 +122,11 @@ export const useUsersQuery = <
       TData = UsersQuery,
       TError = unknown
     >(
-      dataSource: { endpoint: string, fetchParams?: RequestInit },
       variables?: UsersQueryVariables,
       options?: UseQueryOptions<UsersQuery, TError, TData>
     ) =>
     useQuery<UsersQuery, TError, TData>(
       variables === undefined ? ['Users'] : ['Users', variables],
-      fetcher<UsersQuery, UsersQueryVariables>(dataSource.endpoint, dataSource.fetchParams || {}, UsersDocument, variables),
+      fetcher<UsersQuery, UsersQueryVariables>(UsersDocument, variables),
       options
     );

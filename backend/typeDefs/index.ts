@@ -6,5 +6,4 @@ const typesPath = join(__dirname, './**/typeDefs.*');
 
 const typesArray = loadFilesSync(typesPath);
 
-
 export const typeDefs = mergeTypeDefs(typesArray);

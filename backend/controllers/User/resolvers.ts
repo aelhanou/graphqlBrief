@@ -1,5 +1,5 @@
 import { userModel } from "../../models";
-import { Resolvers, User } from "../../typesGenerated/graphql";
+import { MutationRegisterArgs, Resolvers, User } from "../../typesGenerated/graphql";
 import bcrypt from "bcrypt"
 import jsonwebtoken from "jsonwebtoken"
 require("dotenv").config()
@@ -7,14 +7,14 @@ require("dotenv").config()
 
 export const resolvers: Resolvers = {
   Query: {
-    users: async (_, { }, { user }) => {
+    users: async (_, { }, { user }): Promise<User[]> => {
       if (!user) throw new Error('You are not authenticated')
       return await userModel.find()
     }
   },
   Mutation: {
-    register: async (_: any, { input }: any) => {
-      const { fullName, email, password } = input
+    register: async (_: any, { input }: MutationRegisterArgs) => {
+      const { fullName, email, password }: any = input
       try {
         await userModel.create({
           fullName,
@@ -54,3 +54,4 @@ export const resolvers: Resolvers = {
     }
   }
 };
+

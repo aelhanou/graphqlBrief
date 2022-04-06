@@ -1,31 +1,19 @@
 import express from "express"
 import { ApolloServer } from "apollo-server-express";
 import { makeExecutableSchema } from '@graphql-tools/schema';
-import jwt from "jsonwebtoken"
 import { typeDefs } from "./typeDefs";
 import { resolvers } from "./controllers";
 import { DB } from "./config/database";
 import { graphqlUploadExpress } from "graphql-upload";
+import { getUser } from "./middleware/auth";
 
 const app = express();
 
 
-const { JWT_SECRET } = process.env
-const getUser = (token: any) => {
-  try {
-    if (token) {
-      return jwt.verify(token, JWT_SECRET as string)
-    }
-    return null
-  } catch (error) {
-    return null
-  }
-}
-
 const server = new ApolloServer({
   schema: makeExecutableSchema({ typeDefs, resolvers }),
   context: ({ req }) => {
-    const token = req.get('Authorization') || ''
+    const token = req.get('Authorization') || ''    
     return { user: getUser(token.replace('Bearer', '')) }
   },
 });

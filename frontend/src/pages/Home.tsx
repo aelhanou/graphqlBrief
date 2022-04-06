@@ -1,7 +1,7 @@
 import { useUsersQuery } from '../generated'
 
 function Home() {
-  const {data} = useUsersQuery({endpoint:"http://localhost:4000/"})
+  const {data} = useUsersQuery({})
     return (
       <>
         {data && console.log(data)

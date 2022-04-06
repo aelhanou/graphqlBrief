@@ -1,24 +1,31 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useUsersQuery } from './generated'
 
 import './App.css';
 
 function App() {
+  const [value, setValue] = useState([])
 
-  const { data } = useUsersQuery({
-    endpoint: "http://localhost:4000", fetchParams: {
-      headers: {
-        "Content-Type": "application/json"
-      }
-    }
-  })
+  const { data, isLoading }: any = useUsersQuery({})
   useEffect(() => {
-    console.log(data?.users);
-
-  }, [data?.users])
+    if (isLoading == false) {
+      console.log(data.users);
+    }
+  }, [isLoading])
   return (
     <>
-      hhh
+      {(isLoading == false) && data?.users?.map((e: any, i: any) => {
+        return (
+
+          <div key={i}>
+            <div  >bro:{e.id}</div>
+            <div  >bro:{e.fullName}</div>
+            <div  >bro:{e.email}</div>
+          </div>
+
+        )
+
+      })}
     </>
   )
 }

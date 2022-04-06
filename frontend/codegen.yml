@@ -1,13 +1,19 @@
 overwrite: true
-schema: "http://localhost:4000"
+schema: "http://localhost:4000/graphql"
 documents: "src/**/*.gql"
 generates:
   src/generated/index.tsx:
     plugins:
+      - add:
+          content: "import { endpointUrl, fetchParams } from './fetcher';"
       - "typescript"
       - "typescript-operations"
       # - "typescript-react-apollo"
       - "typescript-react-query"
+    config:
+      fetcher:
+        endpoint: 'endpointUrl'
+        fetchParams: 'fetchParams'
   ./graphql.schema.json:
     plugins:
       - "introspection"
