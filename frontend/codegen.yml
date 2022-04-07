@@ -4,16 +4,15 @@ documents: "src/**/*.gql"
 generates:
   src/generated/index.tsx:
     plugins:
-      - add:
-          content: "import { endpointUrl, fetchParams } from './fetcher';"
       - "typescript"
       - "typescript-operations"
       # - "typescript-react-apollo"
       - "typescript-react-query"
     config:
+      exposeFetcher: true
+      exposeQueryKeys: true
       fetcher:
-        endpoint: 'endpointUrl'
-        fetchParams: 'fetchParams'
+        func: ./fetcher#fetcher
   ./graphql.schema.json:
     plugins:
       - "introspection"

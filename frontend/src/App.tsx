@@ -1,20 +1,29 @@
 import React, { useEffect, useState } from 'react';
-import { useUsersQuery } from './generated'
+import { useLoginMutation } from './generated'
 
 import './App.css';
 
 function App() {
-  const [value, setValue] = useState([])
+  const [value, setValue] = useState({})
 
-  const { data, isLoading }: any = useUsersQuery({})
+  const { data } = useLoginMutation({ variables: { loginInput: { email: "elhanouniazeddine00@gmail.com", password: "123" } } }) || {}
+  // const { data, isLoading }: any = useUsersQuery({})
+  // useEffect(() => {
+  //   if (isLoading == false) {
+  //     console.log(data.users);
+  //   }
+  // }, [isLoading])
+
   useEffect(() => {
-    if (isLoading == false) {
-      console.log(data.users);
+    if (data) {
+      console.log(data?.login?.user);
+      setValue(data?.login?.user)
     }
-  }, [isLoading])
+  }, [data])
+
   return (
     <>
-      {(isLoading == false) && data?.users?.map((e: any, i: any) => {
+      {/* {(isLoading == false) && data?.users?.map((e: any, i: any) => {
         return (
 
           <div key={i}>
@@ -25,7 +34,18 @@ function App() {
 
         )
 
-      })}
+      })} */}
+
+      <div>
+        <div>
+          {/* <input type="text" value={value} onChange={(e) => setValue(e.target.value)} /> */}
+
+        </div>
+        <button>add</button>
+      </div>
+
+
+
     </>
   )
 }
